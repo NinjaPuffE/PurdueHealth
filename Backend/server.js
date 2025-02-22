@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { getMongoClient } = require('./utils/db');
+const { connectDB, closeConnection } = require('./utils/db');
 require('dotenv').config();
 
 const app = express();
@@ -36,20 +36,22 @@ app.get('/health', (req, res) => {
 // Import all routes
 const surveyRoutes = require('./routes/survey');
 const workoutPlanRoutes = require('./routes/workoutPlan');
+const authenticationRoutes = require('./routes/authentication');
 
 // Register routes
 app.use('/api/survey', surveyRoutes); // Make sure this is registered
 app.use('/api/workout-plan', workoutPlanRoutes);
+app.use('/api/auth', authenticationRoutes);
 
 // Register routes with corrected path
 app.use('/api/workout-plan', workoutPlanRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
-  console.error('Global error handler:', err);
+  console.error(err.stack);
   res.status(500).json({
-    error: err.message || 'Internal Server Error',
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    message: 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Server error'
   });
 });
 
@@ -67,9 +69,9 @@ app.use((req, res) => {
 });
 
 // Initialize MongoDB connection before starting server
-const initializeServer = async () => {
+const startServer = async () => {
   try {
-    await getMongoClient(); // Establish initial connection
+    await connectDB(); // Establish initial connection
     console.log('MongoDB connection initialized');
     
     app.listen(PORT, () => {
@@ -81,9 +83,7 @@ const initializeServer = async () => {
   }
 };
 
-initializeServer();
-
-const { closeConnection } = require('./utils/db');
+startServer();
 
 process.on('SIGINT', async () => {
   try {
