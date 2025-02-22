@@ -107,15 +107,13 @@ router.get('/macros/:userId', checkJwt, requireEmail, async (req, res) => {
     console.log('Calculating macros for:', userId);
 
     const client = await getMongoClient();
-    const db = client.db(process.env.DATABASE_NAME);
-    const collection = db.collection('surveys');
+    const db = client.db(process.env.test);
+    const surveyCollection = db.collection('surveys');
     
-    // Debug survey collection
-    const count = await collection.countDocuments();
-    console.log(`Total surveys in collection: ${count}`);
-    
-    // Find user survey with more detailed logging
-    const userSurvey = await collection.findOne({ 
+    console.log(`Fetching survey data for user: ${userId}`);
+
+    // Find user's survey with more detailed query
+    const userSurvey = await surveyCollection.findOne({
       $or: [
         { userId: userId },
         { 'answers.email': userId },
@@ -123,11 +121,8 @@ router.get('/macros/:userId', checkJwt, requireEmail, async (req, res) => {
       ]
     });
 
-    console.log('Survey search result:', userSurvey);
-
     if (!userSurvey) {
       console.log('No survey found for user:', userId);
-      // Return default values if no survey exists
       return res.json({
         calories: 2000,
         protein: 150,
@@ -137,46 +132,78 @@ router.get('/macros/:userId', checkJwt, requireEmail, async (req, res) => {
       });
     }
 
-    // Extract values from survey with proper parsing
-    const weight = parseFloat(userSurvey.answers?.weight || userSurvey.weight || 70);
-    const heightFeet = parseFloat(userSurvey.answers?.height?.feet || 5);
-    const heightInches = parseFloat(userSurvey.answers?.height?.inches || 10);
-    const height = (heightFeet * 30.48) + (heightInches * 2.54); // Convert to cm
-    const age = parseFloat(userSurvey.answers?.age || userSurvey.age || 25);
-    const gender = userSurvey.answers?.gender || userSurvey.gender || 'male';
-    const activityLevel = userSurvey.answers?.activityLevel || 'moderate';
-    const workoutDays = parseFloat(userSurvey.answers?.workoutDays || 3);
-
-    console.log('Parsed survey data:', {
-      weight, height, age, gender, activityLevel, workoutDays
+    console.log('Found survey:', {
+      userId: userSurvey.userId,
+      hasAnswers: !!userSurvey.answers,
+      weight: userSurvey.answers?.weight,
+      height: userSurvey.answers?.height
     });
 
-    // Calculate BMR using Mifflin-St Jeor Equation
-    let bmr;
-    if (gender === 'male') {
-      bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
-    } else {
-      bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
-    }
+    // Extract values from survey
+    const answers = userSurvey.answers || {};
+    const weightInPounds = parseFloat(answers.weight) || 155; // Default 155 lbs
+    const weightInKg = weightInPounds * 0.453592; // Convert pounds to kg
+    const height = {
+      feet: parseFloat(answers.height?.feet) || 5,
+      inches: parseFloat(answers.height?.inches) || 10
+    };
+    
+    // Convert height to cm
+    const heightInCm = (height.feet * 30.48) + (height.inches * 2.54);
+    
+    // Update the workout and TDEE calculations
+    const workoutFreq = parseInt(answers.liftingFrequency) || 0;
+    const cardioFreq = parseInt(answers.cardioFrequency) || 0;
+    const workoutsPerDay = (workoutFreq + cardioFreq) / 7; // Convert to daily average
+
+    // Calculate activity level based on average daily activity
+    let activityLevel;
+    if (workoutsPerDay < 0.15) activityLevel = 'sedentary';      // Less than 1 workout per week
+    else if (workoutsPerDay < 0.43) activityLevel = 'light';      // 1-3 workouts per week
+    else if (workoutsPerDay < 0.72) activityLevel = 'moderate';   // 3-5 workouts per week
+    else activityLevel = 'active';                                // 5+ workouts per week
+
+    // Calculate BMR using Mifflin-St Jeor Equation with weight in kg
+    const age = parseInt(answers.age) || 25;
+    const bmr = (10 * weightInKg) + (6.25 * heightInCm) - (5 * age) + 5;
 
     const activityMultipliers = {
-      sedentary: 1.2,
-      light: 1.375,
-      moderate: 1.55,
-      active: 1.725,
-      veryActive: 1.9
+      sedentary: 1.2,    // Little or no exercise
+      light: 1.375,      // Light exercise 1-3 days/week
+      moderate: 1.55,    // Moderate exercise 3-5 days/week
+      active: 1.725      // Heavy exercise 6-7 days/week
     };
 
-    const tdee = bmr * (activityMultipliers[activityLevel] || activityMultipliers.moderate);
-    const workoutCalories = workoutDays * 200;
-    const totalCalories = Math.round(tdee + workoutCalories);
+    // Calculate daily TDEE including average workout calories
+    const dailyWorkoutCalories = (workoutsPerDay * 150); // 150 calories per workout
+    const tdee = Math.round(bmr * activityMultipliers[activityLevel]);
+    const totalDailyCalories = Math.round(tdee + dailyWorkoutCalories);
 
+    // Calculate daily macros using weight in kg
+    const proteinPerKg = 2.2; // Increased for active individuals
     const macros = {
-      calories: totalCalories,
-      protein: Math.round(weight * 2.2), // 1g per lb of bodyweight
-      fat: Math.round((totalCalories * 0.25) / 9),
-      carbs: Math.round((totalCalories - ((weight * 2.2 * 4) + (totalCalories * 0.25))) / 4)
+      calories: totalDailyCalories,
+      protein: Math.round(weightInKg * proteinPerKg),
+      fat: Math.round((totalDailyCalories * 0.25) / 9), // 25% of calories from fat
+      carbs: Math.round(
+        (totalDailyCalories - 
+          ((weightInKg * proteinPerKg * 4) + // Protein calories
+          (totalDailyCalories * 0.25))) / 4  // Fat calories
+      )
     };
+
+    console.log('Daily calculation details:', {
+      weightInPounds,
+      weightInKg,
+      heightInCm,
+      age,
+      bmr,
+      activityLevel,
+      workoutsPerDay,
+      dailyWorkoutCalories,
+      tdee,
+      totalDailyCalories
+    });
 
     console.log('Calculated macros:', macros);
     res.json(macros);
