@@ -3,6 +3,7 @@ const router = express.Router();
 const { MongoClient } = require('mongodb');
 const { checkJwt, extractUserFromToken, requireEmail, handlePreflightRequest } = require('../middleware/auth');
 const { getCollection } = require('../utils/db');
+require('dotenv').config();
 
 let mongoClient = null;
 
