@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
+const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 let isConnected = false;
+let mongoClient = null;
 
 const createIndexes = async () => {
   try {
@@ -56,4 +58,12 @@ const getCollection = async (collectionName) => {
   return mongoose.connection.db.collection(collectionName);
 };
 
-module.exports = { connectDB, getCollection };
+const getMongoClient = async () => {
+  if (!mongoClient) {
+    mongoClient = new MongoClient(process.env.MONGO_URI);
+    await mongoClient.connect();
+  }
+  return mongoClient;
+};
+
+module.exports = { connectDB, getCollection, getMongoClient };

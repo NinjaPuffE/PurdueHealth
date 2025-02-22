@@ -9,6 +9,7 @@ import WorkoutPlan from './WorkoutPlan';
 import { auth0Config } from '../auth0-config';
 import ErrorBoundary from './ErrorBoundary';
 import DiningCourtMenu from './DiningCourtMenu';
+import Dietary from './Dietary';
 
 const App = () => {
   const { isAuthenticated, user, getAccessTokenSilently, logout } = useAuth0();
@@ -311,6 +312,12 @@ const App = () => {
                     />
                   ) : activeView === 'diningCourtMenu' ? (
                     <DiningCourtMenu />
+                  ) : activeView === 'dietary' ? (
+                    <Dietary 
+                      userId={user.email} 
+                      token={token}
+                      surveyData={surveyData}
+                    />
                   ) : (
                     <div className="home-content">
                       <h2>Welcome to BoilerFit</h2>
