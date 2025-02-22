@@ -41,8 +41,8 @@ const workoutPlanRoutes = require('./routes/workoutPlan');
 app.use('/api/survey', surveyRoutes); // Make sure this is registered
 app.use('/api/workout-plan', workoutPlanRoutes);
 
-// Register routes with corrected path
-app.use('/api/workout-plan', workoutPlanRoutes);
+const menuRoutes = require('./routes/menu'); 
+app.use('/api/menu', menuRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
