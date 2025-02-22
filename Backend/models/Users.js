@@ -13,11 +13,22 @@ const userSchema = new mongoose.Schema({
     unique: true
   },
   password: {
+    type: String,
+  },
+  auth0Id: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  picture: {
     type: String
   },
-  googleId: {
-    type: String,
-    sparse: true
+  name: {
+    type: String
+  },
+  lastLogin: {
+    type: Date,
+    default: Date.now
   },
   createdAt: {
     type: Date,

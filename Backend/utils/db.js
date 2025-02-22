@@ -1,65 +1,52 @@
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-let client = null;
-let isConnecting = false;
-let connectionPromise = null;
+let connection = null;
 
-const getMongoClient = async () => {
-  if (client?.topology?.isConnected?.()) {
-    return client;
-  }
-
-  if (isConnecting) {
-    return await connectionPromise;
-  }
-
+const connectDB = async () => {
   try {
     if (!process.env.MONGO_URI) {
       throw new Error('MongoDB URI not configured');
     }
 
-    isConnecting = true;
-    client = new MongoClient(process.env.MONGO_URI);
-    connectionPromise = client.connect();
-    await connectionPromise;
-    
-    console.log('Connected to MongoDB');
-    return client;
+    if (connection) {
+      return connection;
+    }
+
+    connection = await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 30000
+    });
+
+    console.log('MongoDB connected successfully');
+
+    mongoose.connection.on('error', (err) => {
+      console.error('MongoDB error:', err);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      console.log('MongoDB disconnected');
+      connection = null;
+    });
+
+    return connection;
   } catch (error) {
     console.error('MongoDB connection error:', error);
     throw error;
-  } finally {
-    isConnecting = false;
-    connectionPromise = null;
   }
 };
 
 const getCollection = async (collectionName) => {
   try {
-    const client = await getMongoClient();
-    const db = client.db('test');
-    return db.collection(collectionName);
+    if (!connection) {
+      await connectDB();
+    }
+    return mongoose.connection.db.collection(collectionName);
   } catch (error) {
     console.error(`Error getting collection ${collectionName}:`, error);
     throw error;
   }
 };
 
-const closeConnection = async () => {
-  try {
-    if (client?.topology?.isConnected?.()) {
-      await client.close();
-      client = null;
-      console.log('Closed MongoDB connection');
-    }
-  } catch (error) {
-    console.error('Error closing MongoDB connection:', error);
-    throw error;
-  }
-};
-
-module.exports = { 
-  getMongoClient, 
-  getCollection, 
-  closeConnection 
-};
+module.exports = { connectDB, getCollection };
