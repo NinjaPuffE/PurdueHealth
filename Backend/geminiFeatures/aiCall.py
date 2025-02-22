@@ -38,8 +38,7 @@ if __name__ == "__main__":
 
         # Create a list of strings for the AI
         content = (
-            f"Given the following information create a workout plan, use information between Begin Information and End Information before making a response. The workout plan should be sufficiently advanced and have specific workouts for someone that works out frequently, but should focus on beginner exercises otherwise. Don't use markdown, and label each day as Day 1.... Day2.... so on.
-                Stress that anyone seeking such information should consult with a medical professional before making any life altering changes:\n"
+            f"Given the following information create a workout plan, use information between Begin Information and End Information before making a response. The workout plan should be sufficiently advanced and have specific workouts for someone that works out frequently, but should focus on beginner exercises otherwise. Don't use markdown, and label each day as Day 1.... Day2.... so on. Stress that anyone seeking such information should consult with a medical professional before making any life altering changes:\n"
             f"Begin Information\n"
             f"Works out already: {workout}\n"
             f"Height: {height_ft} feet {height_in} inches\n"
