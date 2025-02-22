@@ -37,11 +37,13 @@ app.get('/health', (req, res) => {
 const surveyRoutes = require('./routes/survey');
 const workoutPlanRoutes = require('./routes/workoutPlan');
 const authenticationRoutes = require('./routes/authentication');
+const dietaryRoutes = require('./routes/dietary');
 
 // Register routes
 app.use('/api/survey', surveyRoutes); // Make sure this is registered
 app.use('/api/workout-plan', workoutPlanRoutes);
 app.use('/api/auth', authenticationRoutes);
+app.use('/api/dietary', dietaryRoutes);
 
 // Register routes with corrected path
 app.use('/api/workout-plan', workoutPlanRoutes);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import Auth0SignIn from './Auth0SignIn';
 import Survey from './Survey';
@@ -8,6 +8,7 @@ import Settings from './Settings';
 import WorkoutPlan from './WorkoutPlan';
 import { auth0Config } from '../auth0-config';
 import ErrorBoundary from './ErrorBoundary';
+import Dietary from './Dietary';
 
 const App = () => {
   const { isAuthenticated, user, getAccessTokenSilently, logout } = useAuth0();
@@ -17,39 +18,58 @@ const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [workoutPlan, setWorkoutPlan] = useState(null);
   const [token, setToken] = useState(null);
+  const [error, setError] = useState(null);
+  const [surveyData, setSurveyData] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const initializeAuth = async () => {
-      if (isAuthenticated && user?.email) {
-        try {
-          const accessToken = await getAccessTokenSilently({
-            authorizationParams: {
-              audience: auth0Config.audience,
-              scope: auth0Config.scope
-            }
-          });
+      if (!isAuthenticated || !user?.email) return;
 
-          // Add email to authorization header
-          const headers = {
+      try {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: auth0Config.audience,
+            scope: auth0Config.scope
+          }
+        });
+
+        // Sync user with database
+        const syncResponse = await fetch('http://localhost:5000/api/auth/auth0/sync', {
+          method: 'POST',
+          headers: {
             'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
             'X-User-Email': user.email
-          };
+          }
+        });
 
+        if (!syncResponse.ok) {
+          const errorData = await syncResponse.json();
+          throw new Error(errorData.message || 'Failed to sync user with database');
+        }
+
+        const syncData = await syncResponse.json();
+        console.log('User sync successful:', syncData);
+
+        if (isMounted) {
           setToken(accessToken);
-          console.log('Auth initialized:', { 
-            email: user.email, 
-            tokenPresent: !!accessToken,
-            headers
-          });
-          
           await checkSurveyStatus(user.email, accessToken);
-        } catch (error) {
-          console.error('Auth initialization error:', error);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (isMounted) {
+          setError(error.message);
         }
       }
     };
 
     initializeAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [isAuthenticated, user, getAccessTokenSilently]);
 
   useEffect(() => {
@@ -173,6 +193,31 @@ const App = () => {
     }
 };
 
+  const fetchSurveyData = useCallback(async () => {
+    if (!token || !user?.email) return;
+    
+    try {
+      const response = await fetch(`http://localhost:5000/api/survey/data/${user.email}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) throw new Error('Failed to fetch survey data');
+      const data = await response.json();
+      setSurveyData(data.answers);
+    } catch (error) {
+      console.error('Error fetching survey data:', error);
+    }
+  }, [token, user]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchSurveyData();
+    }
+  }, [isAuthenticated, fetchSurveyData]);
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -206,6 +251,12 @@ const App = () => {
 
   return (
     <div className="App">
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+          <button onClick={() => setError(null)}>Dismiss</button>
+        </div>
+      )}
       {needsSurvey && user?.email ? (
         <Survey 
           userId={user.email}
@@ -240,6 +291,7 @@ const App = () => {
                       <li onClick={() => { setActiveView('profile'); closeMenu(); }}>Profile</li>
                       <li onClick={() => { setActiveView('workoutPlan'); closeMenu(); }}>Workout Plan</li>
                       <li onClick={() => { setActiveView('settings'); closeMenu(); }}>Settings</li>
+                      <li onClick={() => { setActiveView('dietary'); closeMenu(); }}>Dietary</li>
                       <li onClick={handleLogout}>Log Out</li>
                     </ul>
                   </nav>
@@ -255,6 +307,12 @@ const App = () => {
                       token={token} 
                       workoutPlan={workoutPlan}
                       onRegenerateClick={() => generateWorkoutPlan(user.email)}
+                    />
+                  ) : activeView === 'dietary' ? (
+                    <Dietary 
+                      userId={user.email} 
+                      token={token}
+                      surveyData={surveyData}
                     />
                   ) : (
                     <div className="home-content">

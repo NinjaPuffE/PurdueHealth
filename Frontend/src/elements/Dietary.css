@@ -1,0 +1,125 @@
+.dietary-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.macros-summary {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.macros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.macro-item {
+  text-align: center;
+  padding: 15px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+}
+
+.food-search {
+  margin: 20px 0;
+}
+
+.food-search input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.food-search input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.food-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.food-item {
+  background: var(--card-bg);
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.food-item .serving-size {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  margin: 5px 0;
+}
+
+.food-item .nutrition-info {
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+.food-item h4 {
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.servings-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.servings-control input {
+  width: 60px;
+  padding: 5px;
+}
+
+.selected-foods {
+  margin-top: 30px;
+}
+
+.selected-food-item {
+  background: var(--card-bg);
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 6px;
+}
+
+.search-loading {
+  padding: 10px;
+  text-align: center;
+  color: #666;
+}
+
+.search-error {
+  padding: 10px;
+  color: #ff4444;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.nutrition-details {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  margin: 5px 0;
+  padding-top: 5px;
+  border-top: 1px solid var(--border-color);
+}
