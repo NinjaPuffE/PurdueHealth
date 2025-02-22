@@ -45,8 +45,8 @@ app.use('/api/workout-plan', workoutPlanRoutes);
 app.use('/api/auth', authenticationRoutes);
 app.use('/api/dietary', dietaryRoutes);
 
-// Register routes with corrected path
-app.use('/api/workout-plan', workoutPlanRoutes);
+const menuRoutes = require('./routes/menu'); 
+app.use('/api/menu', menuRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

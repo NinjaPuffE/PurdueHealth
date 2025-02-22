@@ -8,7 +8,7 @@ import Settings from './Settings';
 import WorkoutPlan from './WorkoutPlan';
 import { auth0Config } from '../auth0-config';
 import ErrorBoundary from './ErrorBoundary';
-import Dietary from './Dietary';
+import DiningCourtMenu from './DiningCourtMenu';
 
 const App = () => {
   const { isAuthenticated, user, getAccessTokenSilently, logout } = useAuth0();
@@ -290,6 +290,7 @@ const App = () => {
                       <li onClick={() => { setActiveView('home'); closeMenu(); }}>Home</li>
                       <li onClick={() => { setActiveView('profile'); closeMenu(); }}>Profile</li>
                       <li onClick={() => { setActiveView('workoutPlan'); closeMenu(); }}>Workout Plan</li>
+                      <li onClick={() => { setActiveView('diningCourtMenu'); closeMenu(); }}>Dining Court Menu</li>
                       <li onClick={() => { setActiveView('settings'); closeMenu(); }}>Settings</li>
                       <li onClick={() => { setActiveView('dietary'); closeMenu(); }}>Dietary</li>
                       <li onClick={handleLogout}>Log Out</li>
@@ -308,12 +309,8 @@ const App = () => {
                       workoutPlan={workoutPlan}
                       onRegenerateClick={() => generateWorkoutPlan(user.email)}
                     />
-                  ) : activeView === 'dietary' ? (
-                    <Dietary 
-                      userId={user.email} 
-                      token={token}
-                      surveyData={surveyData}
-                    />
+                  ) : activeView === 'diningCourtMenu' ? (
+                    <DiningCourtMenu />
                   ) : (
                     <div className="home-content">
                       <h2>Welcome to BoilerFit</h2>

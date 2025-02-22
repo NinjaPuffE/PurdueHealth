@@ -1,0 +1,131 @@
+/* Main container to prevent overlap with the top bar */
+.dining-court-menu-container {
+    position: relative;
+    padding-top: 80px; /* Matches the height of the top bar */
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    min-height: 100vh;
+}
+
+/* Loading, error, and empty states */
+.loading,
+.error,
+.no-data {
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.loading {
+    background-color: #e0e0e0;
+}
+
+.error {
+    background-color: #ffeded;
+    color: #d32f2f;
+    border: 1px solid #f8bcbc;
+}
+
+.no-data {
+    background-color: #fff8e1;
+    color: #f57c00;
+    border: 1px solid #ffcc80;
+}
+
+/* Card style for menu items */
+.menu-card {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+/* Menu item headings */
+.menu-card h2 {
+    font-size: 1.8rem;
+    margin: 0 0 10px;
+    color: #333;
+}
+
+/* Dietary tags and nutrition info */
+.menu-item {
+    margin-bottom: 15px;
+}
+
+.menu-item h3 {
+    font-size: 1.2rem;
+    color: #555;
+    margin: 5px 0;
+}
+
+.menu-item p {
+    margin: 2px 0;
+    color: #666;
+}
+
+/* Form controls and buttons */
+select,
+input[type="date"],
+button {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+select,
+input[type="date"] {
+    background-color: white;
+    color: #333;
+    min-width: 150px;
+}
+
+button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #388e3c;
+}
+
+/* Dietary restrictions list */
+.dietary-restrictions ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.dietary-restrictions li {
+    padding: 10px;
+    background-color: #f1f1f1;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    color: #333;
+}
+
+/* Grid layout for responsive design */
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .menu-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 1024px) {
+    .menu-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
