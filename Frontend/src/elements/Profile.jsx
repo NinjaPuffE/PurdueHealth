@@ -11,6 +11,7 @@ const Profile = ({ userId, token }) => {
   // Memoize the regenerateWorkoutPlan function
   const regenerateWorkoutPlan = useCallback(async () => {
     try {
+      console.log('Regenerating workout plan...');
       const response = await fetch(`http://localhost:5000/api/workout-plan/${userId}/regenerate`, {
         method: 'POST',
         headers: {
@@ -19,12 +20,20 @@ const Profile = ({ userId, token }) => {
         }
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to regenerate workout plan');
+        throw new Error(data.error || 'Failed to regenerate workout plan');
       }
+
+      console.log('Workout plan regenerated:', data);
+      window.dispatchEvent(new CustomEvent('workoutPlanUpdated', { 
+        detail: data.plan 
+      }));
+
     } catch (error) {
       console.error('Error regenerating workout plan:', error);
-      alert('Failed to update workout plan');
+      alert('Failed to update workout plan: ' + error.message);
     }
   }, [userId, token]);
 

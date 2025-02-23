@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import './WorkoutPlan.css';
 
 const WorkoutPlan = ({ userId, token }) => {
@@ -55,6 +56,17 @@ const WorkoutPlan = ({ userId, token }) => {
     };
   }, [userId, token, workoutPlan]);
 
+  const renderWorkout = (workout) => {
+    if (typeof workout === 'string') {
+      return (
+        <div className="workout-markdown">
+          <ReactMarkdown>{workout}</ReactMarkdown>
+        </div>
+      );
+    }
+    return <p>{JSON.stringify(workout)}</p>;
+  };
+
   if (loading) {
     return <div className="workout-plan-loading">Loading your personalized workout plan...</div>;
   }
@@ -71,16 +83,11 @@ const WorkoutPlan = ({ userId, token }) => {
     <div className="workout-plan-container">
       <h2>Your Personalized Workout Plan</h2>
       <div className="workout-schedule">
-        {workoutPlan.schedule.map((day, index) => (
-          <div key={index} className="workout-day">
-            <h3>{day.name}</h3>
-            <div className="exercises">
-              {day.exercises?.map((exercise, idx) => (
-                <div key={idx} className="exercise">
-                  <h4>{exercise.name}</h4>
-                  <p>{exercise.sets} sets × {exercise.reps} reps</p>
-                </div>
-              ))}
+        {Object.entries(workoutPlan.schedule).map(([day, workout]) => (
+          <div key={day} className="workout-day">
+            <h3>{day}</h3>
+            <div className="exercise">
+              {renderWorkout(workout)}
             </div>
           </div>
         ))}

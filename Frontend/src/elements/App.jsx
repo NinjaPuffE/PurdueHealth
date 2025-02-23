@@ -219,6 +219,19 @@ const App = () => {
     }
   }, [isAuthenticated, fetchSurveyData]);
 
+  useEffect(() => {
+    const handleWorkoutPlanUpdate = () => {
+      if (user?.email) {
+        generateWorkoutPlan(user.email);
+      }
+    };
+
+    window.addEventListener('workoutPlanUpdated', handleWorkoutPlanUpdate);
+    return () => {
+      window.removeEventListener('workoutPlanUpdated', handleWorkoutPlanUpdate);
+    };
+  }, [user, generateWorkoutPlan]);
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
