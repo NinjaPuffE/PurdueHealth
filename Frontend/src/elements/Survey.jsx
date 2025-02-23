@@ -24,7 +24,7 @@ const Survey = ({ userId, token, onComplete }) => {
   // Memoize checkSurveyStatus
   const checkSurveyStatus = useCallback(async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/survey/status/${userId}`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/survey/status/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -162,7 +162,7 @@ const Survey = ({ userId, token, onComplete }) => {
         throw new Error('Missing authentication data');
       }
   
-      const response = await fetch('http://localhost:5000/api/survey', {
+      const response = await fetch('https://purduehealth.onrender.com/api/survey', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

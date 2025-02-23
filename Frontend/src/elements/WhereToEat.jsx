@@ -69,7 +69,7 @@ const WhereToEat = ({ userId, token }) => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/social/groups/${userId}`, {
+        const response = await fetch(`https://purduehealth.onrender.com/api/social/groups/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ const WhereToEat = ({ userId, token }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:5000/api/recommendations/dining', {
+      const response = await fetch('https://purduehealth.onrender.com/api/recommendations/dining', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

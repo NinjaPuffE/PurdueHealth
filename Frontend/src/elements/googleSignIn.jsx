@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 
 // Define the signin function
 const signin = async (username, password) => {
-  const response = await fetch('http://localhost:5000/api/auth/login', {
+  const response = await fetch('https://purduehealth.onrender.com/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ const SignIn = ({ setToken, onSuccess, onError }) => {
       console.log('Google Sign In success', decoded);
       
       // First, check if this Google account already exists
-      const checkRes = await fetch('http://localhost:5000/api/google/check', {
+      const checkRes = await fetch('https://purduehealth.onrender.com/api/google/check', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ const SignIn = ({ setToken, onSuccess, onError }) => {
       
       if (checkData.exists) {
         // User exists, proceed with normal sign in
-        const res = await fetch('http://localhost:5000/api/google/signin', {
+        const res = await fetch('https://purduehealth.onrender.com/api/google/signin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ const SignIn = ({ setToken, onSuccess, onError }) => {
     
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/google/signin', {
+      const res = await fetch('https://purduehealth.onrender.com/api/google/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

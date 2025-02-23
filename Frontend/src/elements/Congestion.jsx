@@ -12,7 +12,7 @@ const Congestion = () => {
         const token = localStorage.getItem('token');
         console.log('Fetching with token:', token ? 'Present' : 'Missing');
 
-        const response = await fetch('http://localhost:5000/api/congestion', {
+        const response = await fetch('https://purduehealth.onrender.com/api/congestion', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json'

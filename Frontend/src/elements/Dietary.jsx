@@ -22,7 +22,7 @@ const Dietary = ({ userId, token, surveyData }) => {
     const fetchMacros = async () => {
       try {
         console.log('Fetching macros for user:', userId);
-        const response = await fetch(`http://localhost:5000/api/dietary/macros/${userId}`, {
+        const response = await fetch(`https://purduehealth.onrender.com/api/dietary/macros/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ const Dietary = ({ userId, token, surveyData }) => {
         console.log('Searching foods:', searchTerm);
         
         const response = await fetch(
-          `http://localhost:5000/api/dietary/foods?search=${encodeURIComponent(searchTerm)}`,
+          `https://purduehealth.onrender.com/api/dietary/foods?search=${encodeURIComponent(searchTerm)}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -99,7 +99,7 @@ const Dietary = ({ userId, token, surveyData }) => {
     const fetchTodaysMeals = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/dietary/today-meals/${userId}`,
+          `https://purduehealth.onrender.com/api/dietary/today-meals/${userId}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -143,7 +143,7 @@ const Dietary = ({ userId, token, surveyData }) => {
         totalFat: food.fat * servings
       };
 
-      const response = await fetch('http://localhost:5000/api/dietary/add-food', {
+      const response = await fetch('https://purduehealth.onrender.com/api/dietary/add-food', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -187,7 +187,7 @@ const Dietary = ({ userId, token, surveyData }) => {
 
   const saveMeal = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/dietary/meals', {
+      const response = await fetch('https://purduehealth.onrender.com/api/dietary/meals', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -221,7 +221,7 @@ const Dietary = ({ userId, token, surveyData }) => {
   const removeFood = async (foodId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/dietary/remove-food/${userId}/${foodId}`,
+        `https://purduehealth.onrender.com/api/dietary/remove-food/${userId}/${foodId}`,
         {
           method: 'DELETE',
           headers: {

@@ -21,19 +21,19 @@ const Social = ({ userId, token }) => {
     const fetchSocialData = async () => {
       try {
         const [friendsResponse, groupsResponse, requestsResponse] = await Promise.all([
-          fetch(`http://localhost:5000/api/social/friends/${userId}`, {
+          fetch(`https://purduehealth.onrender.com/api/social/friends/${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           }),
-          fetch(`http://localhost:5000/api/social/groups/${userId}`, {
+          fetch(`https://purduehealth.onrender.com/api/social/groups/${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           }),
-          fetch(`http://localhost:5000/api/social/friend-requests/${userId}`, {
+          fetch(`https://purduehealth.onrender.com/api/social/friend-requests/${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -64,7 +64,7 @@ const Social = ({ userId, token }) => {
     if (term.length < 2) return;
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/social/search?term=${term}`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/social/search?term=${term}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -82,7 +82,7 @@ const Social = ({ userId, token }) => {
   // Add friend request function
   const sendFriendRequest = async (friendId) => {
     try {
-      const response = await fetch('http://localhost:5000/api/social/friends/request', {
+      const response = await fetch('https://purduehealth.onrender.com/api/social/friends/request', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -115,7 +115,7 @@ const Social = ({ userId, token }) => {
   // Accept friend request function
   const acceptFriendRequest = async (friendId) => {
     try {
-      const response = await fetch('http://localhost:5000/api/social/friends/accept', {
+      const response = await fetch('https://purduehealth.onrender.com/api/social/friends/accept', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -138,7 +138,7 @@ const Social = ({ userId, token }) => {
   // Add friend
   const addFriend = async (friendId) => {
     try {
-      const response = await fetch('http://localhost:5000/api/social/friends/add', {
+      const response = await fetch('https://purduehealth.onrender.com/api/social/friends/add', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -156,7 +156,7 @@ const Social = ({ userId, token }) => {
   // Create meal group
   const createMealGroup = async (groupName) => {
     try {
-      const response = await fetch('http://localhost:5000/api/social/groups/create', {
+      const response = await fetch('https://purduehealth.onrender.com/api/social/groups/create', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -180,7 +180,7 @@ const Social = ({ userId, token }) => {
     try {
       if (!memberIds.length) return;
 
-      const response = await fetch(`http://localhost:5000/api/social/groups/${groupId}/members`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/social/groups/${groupId}/members`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -214,7 +214,7 @@ const Social = ({ userId, token }) => {
   // Update create group function
   const createGroup = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/social/groups/create', {
+      const response = await fetch('https://purduehealth.onrender.com/api/social/groups/create', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

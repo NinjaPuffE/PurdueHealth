@@ -11,7 +11,7 @@ const Favorites = ({ userId, token }) => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/favorites/${userId}`, {
+        const response = await fetch(`https://purduehealth.onrender.com/api/favorites/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ const Favorites = ({ userId, token }) => {
       try {
         setIsSearching(true);
         const response = await fetch(
-          `http://localhost:5000/api/dietary/foods?search=${encodeURIComponent(searchTerm)}`,
+          `https://purduehealth.onrender.com/api/dietary/foods?search=${encodeURIComponent(searchTerm)}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -77,7 +77,7 @@ const Favorites = ({ userId, token }) => {
       };
 
       // Add to favorites
-      const response = await fetch('http://localhost:5000/api/favorites/add', {
+      const response = await fetch('https://purduehealth.onrender.com/api/favorites/add', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -105,7 +105,7 @@ const Favorites = ({ userId, token }) => {
 
   const removeFavorite = async (foodName) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/favorites/${foodName}`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/favorites/${foodName}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

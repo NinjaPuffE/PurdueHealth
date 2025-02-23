@@ -21,7 +21,7 @@ const DiningCourtMenu = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`http://localhost:5000/api/menu/getMenus?dining_court=${selectedCourt}&date=${selectedDate}`);
+            const response = await fetch(`https://purduehealth.onrender.com/api/menu/getMenus?dining_court=${selectedCourt}&date=${selectedDate}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

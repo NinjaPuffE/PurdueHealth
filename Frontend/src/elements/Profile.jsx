@@ -12,7 +12,7 @@ const Profile = ({ userId, token }) => {
   const regenerateWorkoutPlan = useCallback(async () => {
     try {
       console.log('Regenerating workout plan...');
-      const response = await fetch(`http://localhost:5000/api/workout-plan/${userId}/regenerate`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/workout-plan/${userId}/regenerate`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -48,7 +48,7 @@ const Profile = ({ userId, token }) => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`http://localhost:5000/api/survey/data/${userId}`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/survey/data/${userId}`, {
         credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -97,7 +97,7 @@ const Profile = ({ userId, token }) => {
         userId
       });
 
-      const response = await fetch(`http://localhost:5000/api/survey/${userId}`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/survey/${userId}`, {
         method: 'PATCH',
         credentials: 'include',
         headers: {

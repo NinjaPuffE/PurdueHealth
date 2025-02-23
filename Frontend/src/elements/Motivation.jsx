@@ -15,19 +15,19 @@ const Motivation = ({ userId, token }) => {
       try {
         // Fetch macro targets and dietary data
         const [macrosResponse, dietaryResponse, workoutResponse] = await Promise.all([
-          fetch(`http://localhost:5000/api/dietary/macros/${userId}`, {
+          fetch(`https://purduehealth.onrender.com/api/dietary/macros/${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           }),
-          fetch(`http://localhost:5000/api/dietary/today-meals/${userId}`, {
+          fetch(`https://purduehealth.onrender.com/api/dietary/today-meals/${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           }),
-          fetch(`http://localhost:5000/api/workout-plan/${userId}`, {
+          fetch(`https://purduehealth.onrender.com/api/workout-plan/${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ const Motivation = ({ userId, token }) => {
         const todaysWorkout = workoutData?.schedule?.[today];
 
         // Generate motivation
-        const motivationResponse = await fetch('http://localhost:5000/api/motivation/generate', {
+        const motivationResponse = await fetch('https://purduehealth.onrender.com/api/motivation/generate', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -120,7 +120,7 @@ const Motivation = ({ userId, token }) => {
             }}
           >
             <source 
-              src={`http://localhost:5000/api/motivation/video`}
+              src={`https://purduehealth.onrender.com/api/motivation/video`}
               type="video/mp4"
             />
             Your browser does not support the video tag.

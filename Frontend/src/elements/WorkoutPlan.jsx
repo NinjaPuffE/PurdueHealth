@@ -18,7 +18,7 @@ const WorkoutPlan = ({ userId, token }) => {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/workout-plan/${userId}`, {
+        const response = await fetch(`https://purduehealth.onrender.com/api/workout-plan/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

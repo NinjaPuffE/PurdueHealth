@@ -43,7 +43,7 @@ const App = () => {
         });
 
         // Sync user with database
-        const syncResponse = await fetch('http://localhost:5000/api/auth/auth0/sync', {
+        const syncResponse = await fetch('https://purduehealth.onrender.com/api/auth/auth0/sync', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -106,7 +106,7 @@ const App = () => {
 
       console.log('Checking survey status with:', { userId, tokenPresent: !!currentToken });
       
-      const response = await fetch(`http://localhost:5000/api/survey/status/${userId}`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/survey/status/${userId}`, {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
           'Content-Type': 'application/json'
@@ -134,7 +134,7 @@ const App = () => {
       setNeedsSurvey(false);
       if (user?.email) {
         try {
-          const surveyResponse = await fetch(`http://localhost:5000/api/survey/status/${user.email}`, {
+          const surveyResponse = await fetch(`https://purduehealth.onrender.com/api/survey/status/${user.email}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -162,7 +162,7 @@ const App = () => {
 
   const generateWorkoutPlan = async (userId) => {
     try {
-        const surveyCheckResponse = await fetch(`http://localhost:5000/api/survey/status/${userId}`, {
+        const surveyCheckResponse = await fetch(`https://purduehealth.onrender.com/api/survey/status/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -174,7 +174,7 @@ const App = () => {
             throw new Error('Please complete the survey first');
         }
 
-        const response = await fetch(`http://localhost:5000/api/workout-plan/${userId}`, {
+        const response = await fetch(`https://purduehealth.onrender.com/api/workout-plan/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -208,7 +208,7 @@ const App = () => {
     if (!token || !user?.email) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/survey/data/${user.email}`, {
+      const response = await fetch(`https://purduehealth.onrender.com/api/survey/data/${user.email}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
