@@ -16,8 +16,8 @@ root.render(
         audience: auth0Config.audience,
         scope: auth0Config.scope
       }}
-      useRefreshTokens={auth0Config.useRefreshTokens}
-      cacheLocation={auth0Config.cacheLocation}
+      useRefreshTokens={true}
+      cacheLocation="localstorage"
     >
       <App />
     </Auth0Provider>

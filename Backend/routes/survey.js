@@ -132,34 +132,69 @@ router.post('/', checkJwt, requireEmail, async (req, res) => {
 router.patch('/:userId', checkJwt, requireEmail, async (req, res) => {
   let client;
   try {
+    // Get MongoDB client
     client = await getMongoClient();
     const db = client.db('test');
     const collection = db.collection('surveys');
-
+    
     const userId = req.params.userId;
     const { field, value } = req.body;
 
+    console.log('Updating survey:', {
+      userId,
+      field,
+      value,
+      userEmail: req.user.email
+    });
+
+    // Validate input
     if (!field || value === undefined) {
-      return res.status(400).json({ message: 'Missing field or value' });
+      return res.status(400).json({ 
+        message: 'Missing field or value',
+        details: { field, value }
+      });
     }
 
     // Verify user authorization
     if (req.user.email !== userId) {
+      console.log('Authorization failed:', {
+        tokenEmail: req.user.email,
+        requestedId: userId
+      });
       return res.status(403).json({ message: 'Unauthorized access' });
     }
 
-    const result = await collection.updateOne(
-      { userId },
-      { 
-        $set: { 
+    // Handle nested fields like height
+    let updateQuery;
+    if (field === 'height') {
+      updateQuery = {
+        $set: {
+          'answers.height': value,
+          updatedAt: new Date()
+        }
+      };
+    } else {
+      updateQuery = {
+        $set: {
           [`answers.${field}`]: value,
           updatedAt: new Date()
         }
-      }
+      };
+    }
+
+    // Update the document
+    const result = await collection.updateOne(
+      { userId },
+      updateQuery
     );
 
+    console.log('Update result:', result);
+
     if (result.matchedCount === 0) {
-      return res.status(404).json({ message: 'Survey not found' });
+      return res.status(404).json({ 
+        message: 'Survey not found',
+        details: { userId }
+      });
     }
 
     // Also trigger workout plan regeneration if needed
@@ -178,11 +213,21 @@ router.patch('/:userId', checkJwt, requireEmail, async (req, res) => {
       field,
       value 
     });
+
   } catch (error) {
-    console.error('Error updating survey:', error);
-    res.status(500).json({ message: 'Failed to update survey' });
+    console.error('Error updating survey:', {
+      error: error.message,
+      stack: error.stack
+    });
+    res.status(500).json({ 
+      message: 'Failed to update survey',
+      error: error.message
+    });
   } finally {
-    if (client) await client.close();
+    if (client) {
+      await client.close();
+      console.log('MongoDB connection closed');
+    }
   }
 });
 

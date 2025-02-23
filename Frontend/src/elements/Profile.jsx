@@ -91,6 +91,12 @@ const Profile = ({ userId, token }) => {
 
   const handleSave = async (field) => {
     try {
+      console.log('Saving field:', {
+        field,
+        value: editedValue[field],
+        userId
+      });
+
       const response = await fetch(`http://localhost:5000/api/survey/${userId}`, {
         method: 'PATCH',
         credentials: 'include',
@@ -101,16 +107,19 @@ const Profile = ({ userId, token }) => {
         },
         body: JSON.stringify({
           field,
-          value: editedValue[field]
+          value: field === 'height' ? {
+            feet: editedValue.feet,
+            inches: editedValue.inches
+          } : editedValue[field]
         })
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update field');
+        throw new Error(data.message || 'Failed to update field');
       }
 
-      const data = await response.json();
       setSurveyData(prev => ({
         ...prev,
         [field]: data.value
