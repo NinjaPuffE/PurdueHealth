@@ -12,10 +12,12 @@ import os
 from pymongo import MongoClient
 import certifi
 
+load_dotenv()
+
 # Set up MongoDB connection
 MONGODB_URI = os.getenv('MONGO_URI')
 DATABASE_NAME = os.getenv('DATABASE_NAME')
-MENU_COLLECTION_NAME = os.getenv('MENU_COLLECTION_NAME')
+MENU_COLLECTION_NAME = os.getenv('MENUS_COLLECTION_NAME')
 NUT_COLLECTION_NAME = os.getenv('NUT_COLLECTION_NAME')
 
 # Connect to MongoDB with SSL certificate verification
@@ -56,7 +58,7 @@ times = [
     "Late%20Lunch"
 ]
 
-def extract_menu_data(html_content, dining_court, date):
+def extract_menu_data(html_content, dining_court, date, time_slot):
     soup = BeautifulSoup(html_content, 'html.parser')
     stations = soup.find_all('div', class_='station')
 
@@ -78,6 +80,7 @@ def extract_menu_data(html_content, dining_court, date):
                 'item_name': item_name,
                 'nutrition_link': nutrition_link,
                 'dietary_tags': dietary_tags,
+                'timeslot': time_slot,
                 'date': date,
                 'timestamp': datetime.utcnow()
             })
@@ -158,7 +161,7 @@ def check_future_menus():
                         continue
 
                     page_source = driver.page_source
-                    menu_items = extract_menu_data(page_source, court, date)
+                    menu_items = extract_menu_data(page_source, court, date, time_slot)
 
                     if not menu_items:
                         print(f"No items found for {court} - {time_slot} on {date}")
@@ -169,12 +172,13 @@ def check_future_menus():
                         existing_item = menu_collection.find_one({
                             'dining_court': item['dining_court'],
                             'item_name': item['item_name'],
-                            'date': item['date']
+                            'date': item['date'],
+                            'timeslot': item['timeslot']
                         })
 
                         if not existing_item:
                             menu_collection.insert_one(item)
-                            print(f"Added new menu item: {item['item_name']} at {item['dining_court']} on {item['date']}")
+                            print(f"Added new menu item: {item['item_name']} at {item['dining_court']} at {item['timeslot']} on {item['date']}")
 
                             # Check and update nutrition info
                             nutrition_data = extract_nutrition_data(driver, item['nutrition_link'], item['item_name'])
