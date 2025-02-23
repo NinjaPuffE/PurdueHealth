@@ -48,6 +48,9 @@ app.use('/api/dietary', dietaryRoutes);
 const menuRoutes = require('./routes/menu'); 
 app.use('/api/menu', menuRoutes);
 
+const motivationRoutes = require('./routes/motivation');
+app.use('/api/motivation', motivationRoutes);
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);

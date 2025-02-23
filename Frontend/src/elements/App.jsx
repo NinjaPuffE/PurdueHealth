@@ -11,6 +11,7 @@ import ErrorBoundary from './ErrorBoundary';
 import DiningCourtMenu from './DiningCourtMenu';
 import Dietary from './Dietary';
 import Home from './Home';
+import Motivation from './Motivation';
 
 const App = () => {
   const { isAuthenticated, user, getAccessTokenSilently, logout } = useAuth0();
@@ -312,6 +313,7 @@ const App = () => {
                       <li onClick={() => { setActiveView('diningCourtMenu'); closeMenu(); }}>Dining Court Menu</li>
                       <li onClick={() => { setActiveView('settings'); closeMenu(); }}>Settings</li>
                       <li onClick={() => { setActiveView('dietary'); closeMenu(); }}>Dietary</li>
+                      <li onClick={() => { setActiveView('motivation'); closeMenu(); }}>Motivation</li>
                       <li onClick={handleLogout}>Log Out</li>
                     </ul>
                   </nav>
@@ -337,6 +339,11 @@ const App = () => {
                       userId={user.email} 
                       token={token}
                       surveyData={surveyData}
+                    />
+                  ) : activeView === 'motivation' ? (
+                    <Motivation 
+                      userId={user.email}
+                      token={token}
                     />
                   ) : null}
                 </main>

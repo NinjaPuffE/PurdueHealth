@@ -417,6 +417,66 @@ router.post('/add-food', checkJwt, requireEmail, async (req, res) => {
   }
 });
 
+// Add this route to remove a food from today's meals
+router.delete('/remove-food/:userId/:foodId', checkJwt, requireEmail, async (req, res) => {
+  try {
+    const { userId, foodId } = req.params;
+    
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const todaysMeals = await Meal.findOne({
+      userId,
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    });
+
+    if (!todaysMeals) {
+      return res.status(404).json({ message: 'No meals found for today' });
+    }
+
+    // Find the index of the food to remove
+    const foodIndex = todaysMeals.foods.findIndex(food => 
+      food._id.toString() === foodId
+    );
+
+    if (foodIndex === -1) {
+      return res.status(404).json({ message: 'Food not found' });
+    }
+
+    // Remove only the specific food
+    todaysMeals.foods.splice(foodIndex, 1);
+
+    // Recalculate daily totals with remaining foods
+    todaysMeals.dailyTotals = todaysMeals.foods.reduce((acc, food) => ({
+      calories: acc.calories + (food.totalCalories || 0),
+      protein: acc.protein + (food.totalProtein || 0),
+      carbs: acc.carbs + (food.totalCarbs || 0),
+      fat: acc.fat + (food.totalFat || 0)
+    }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+
+    await todaysMeals.save();
+
+    // Return the updated meals document
+    res.json({
+      foods: todaysMeals.foods,
+      dailyTotals: todaysMeals.dailyTotals
+    });
+
+  } catch (error) {
+    console.error('Error removing food:', error);
+    res.status(500).json({ 
+      message: 'Failed to remove food',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Server error'
+    });
+  }
+});
+
 // Helper function to parse nutrition values
 const parseNutritionValue = (value) => {
   if (!value) return 0;

@@ -1,0 +1,106 @@
+.motivation-container {
+  padding: 2rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.motivation-video {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  margin-bottom: 2rem;
+}
+
+.motivation-video-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+.motivation-video video {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+.motivation-content {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+}
+
+.motivation-content h2 {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.motivation-message {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: var(--background-secondary);
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.motivation-loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+}
+
+.motivation-error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--error-text);
+  background: var(--error-bg);
+  border-radius: 8px;
+  margin: 2rem;
+}
+
+.video-error {
+  background: var(--background-secondary);
+  padding: 2rem;
+  text-align: center;
+  border-radius: 12px;
+  color: var(--error-text);
+}
+
+.stat-item {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.stat-item h4 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.stat-item p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}

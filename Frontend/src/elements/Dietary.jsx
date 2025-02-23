@@ -218,10 +218,30 @@ const Dietary = ({ userId, token, surveyData }) => {
     }
   };
 
-  const removeFood = (index) => {
-    const updatedFoods = selectedFoods.filter((_, i) => i !== index);
-    setSelectedFoods(updatedFoods);
-    updateDailyTotals(updatedFoods);
+  const removeFood = async (foodId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/dietary/remove-food/${userId}/${foodId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to remove food');
+      }
+
+      const updatedMeals = await response.json();
+      setSelectedFoods(updatedMeals.foods);
+      setDailyTotal(updatedMeals.dailyTotals);
+
+    } catch (error) {
+      console.error('Error removing food:', error);
+    }
   };
 
   return (
@@ -312,8 +332,8 @@ const Dietary = ({ userId, token, surveyData }) => {
         <h2>Today's Foods</h2>
         {selectedFoods.length > 0 ? (
           <div className="selected-foods-list">
-            {selectedFoods.map((food, index) => (
-              <div key={`${food._id}-${index}`} className="selected-food-item">
+            {selectedFoods.map((food) => (
+              <div key={food._id} className="selected-food-item">
                 <div className="food-info">
                   <h4>{food.name}</h4>
                   <p>{food.servings} serving(s)</p>
@@ -326,7 +346,7 @@ const Dietary = ({ userId, token, surveyData }) => {
                 </div>
                 <button 
                   className="remove-food"
-                  onClick={() => removeFood(index)}
+                  onClick={() => removeFood(food._id)}
                 >
                   ✕
                 </button>
