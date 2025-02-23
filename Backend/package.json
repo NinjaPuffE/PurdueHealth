@@ -1,7 +1,8 @@
 {
+  
   "name": "purdue-app",
   "version": "0.1.0",
-  "main": "src/index.js",
+  "main": "server.js",
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^2.3.0",
