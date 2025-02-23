@@ -10,13 +10,14 @@ import { auth0Config } from '../auth0-config';
 import ErrorBoundary from './ErrorBoundary';
 import DiningCourtMenu from './DiningCourtMenu';
 import Dietary from './Dietary';
+import Home from './Home';
 
 const App = () => {
   const { isAuthenticated, user, getAccessTokenSilently, logout } = useAuth0();
   const [menuOpen, setMenuOpen] = useState(false);
   const [needsSurvey, setNeedsSurvey] = useState(true);
   const [activeView, setActiveView] = useState('home');
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [workoutPlan, setWorkoutPlan] = useState(null);
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
@@ -79,7 +80,11 @@ const App = () => {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('darkMode');
-    if (savedTheme !== null) {
+    if (savedTheme === null) {
+      // If no theme is saved, set dark mode as default
+      localStorage.setItem('darkMode', 'true');
+      setIsDarkMode(true);
+    } else {
       setIsDarkMode(savedTheme === 'true');
     }
   }, []);
@@ -312,7 +317,9 @@ const App = () => {
                   </nav>
                 )}
                 <main className="main-content">
-                  {activeView === 'profile' ? (
+                  {activeView === 'home' ? (
+                    <Home />
+                  ) : activeView === 'profile' ? (
                     <Profile userId={user.email} token={token} />
                   ) : activeView === 'settings' ? (
                     <Settings isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
@@ -331,12 +338,7 @@ const App = () => {
                       token={token}
                       surveyData={surveyData}
                     />
-                  ) : (
-                    <div className="home-content">
-                      <h2>Welcome to BoilerFit</h2>
-                      <p>Your personalized fitness and nutrition companion.</p>
-                    </div>
-                  )}
+                  ) : null}
                 </main>
               </div>
             )}

@@ -2,16 +2,49 @@
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+.settings-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.settings-header h2 {
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 1.8rem;
 }
 
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
+  padding: 1.5rem;
+  background: var(--background-secondary);
+  border-radius: 8px;
   margin-bottom: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.setting-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+}
+
+.setting-label {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.setting-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
 
 .toggle-switch {
@@ -34,9 +67,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--background-secondary);
+  background-color: var(--background-primary);
   transition: .4s;
   border-radius: 34px;
+  border: 2px solid var(--border-color);
 }
 
 .toggle-slider:before {
@@ -44,17 +78,49 @@
   content: "";
   height: 26px;
   width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: var(--gold);
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--primary-color);
   transition: .4s;
   border-radius: 50%;
 }
 
 input:checked + .toggle-slider {
   background-color: var(--black);
+  border-color: var(--primary-color);
 }
 
 input:checked + .toggle-slider:before {
   transform: translateX(26px);
+  background-color: var(--primary-color);
+}
+
+/* Dark mode specific styles */
+[data-theme='dark'] .setting-item {
+  background: var(--background-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme='dark'] .toggle-slider {
+  background-color: var(--background-secondary);
+}
+
+[data-theme='dark'] .toggle-slider:before {
+  background-color: var(--primary-color);
+}
+
+/* Loading state */
+.settings-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+/* Error state */
+.settings-error {
+  color: #f44336;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 4px;
 }
