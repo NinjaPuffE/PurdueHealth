@@ -1,3 +1,46 @@
+/* Variables for theming */
+:root {
+    --background-primary: #FFFFFF;
+    --background-secondary: #F5F5F5;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #DDDDDD;
+    --card-bg: #FFFFFF;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --input-bg: #FFFFFF;
+    --button-bg: #CEB888;
+    --button-hover: #9E8B68;
+    --loading-bg: #E0E0E0;
+    --error-bg: #FFEDED;
+    --error-text: #D32F2F;
+    --error-border: #F8BCBC;
+    --warning-bg: #FFF8E1;
+    --warning-text: #F57C00;
+    --warning-border: #FFCC80;
+    --dietary-tag-bg: #F1F1F1;
+}
+
+[data-theme='dark'] {
+    --background-primary: #121212;
+    --background-secondary: #1E1E1E;
+    --text-primary: #FFFFFF;
+    --text-secondary: #B0B0B0;
+    --border-color: #333333;
+    --card-bg: #1E1E1E;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --input-bg: #2D2D2D;
+    --button-bg: #CEB888;
+    --button-hover: #9E8B68;
+    --loading-bg: #2D2D2D;
+    --error-bg: rgba(211, 47, 47, 0.1);
+    --error-text: #FF5252;
+    --error-border: #D32F2F;
+    --warning-bg: rgba(245, 124, 0, 0.1);
+    --warning-text: #FFAB40;
+    --warning-border: #F57C00;
+    --dietary-tag-bg: #2D2D2D;
+}
+
 /* Main container to prevent overlap with the top bar */
 .dining-court-menu-container {
     position: relative;
@@ -6,6 +49,8 @@
     margin: 0 auto;
     box-sizing: border-box;
     min-height: 100vh;
+    background: var(--background-primary);
+    color: var(--text-primary);
 }
 
 /* Loading, error, and empty states */
@@ -20,35 +65,41 @@
 }
 
 .loading {
-    background-color: #e0e0e0;
+    background-color: var(--loading-bg);
+    color: var(--text-primary);
 }
 
 .error {
-    background-color: #ffeded;
-    color: #d32f2f;
-    border: 1px solid #f8bcbc;
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
 }
 
 .no-data {
-    background-color: #fff8e1;
-    color: #f57c00;
-    border: 1px solid #ffcc80;
+    background-color: var(--warning-bg);
+    color: var(--warning-text);
+    border: 1px solid var(--warning-border);
 }
 
 /* Card style for menu items */
 .menu-card {
     padding: 20px;
-    background-color: white;
+    background-color: var(--card-bg);
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--card-shadow);
     margin: 20px 0;
+    transition: transform 0.2s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-2px);
 }
 
 /* Menu item headings */
 .menu-card h2 {
     font-size: 1.8rem;
     margin: 0 0 10px;
-    color: #333;
+    color: var(--text-primary);
 }
 
 /* Dietary tags and nutrition info */
@@ -58,13 +109,13 @@
 
 .menu-item h3 {
     font-size: 1.2rem;
-    color: #555;
+    color: var(--text-primary);
     margin: 5px 0;
 }
 
 .menu-item p {
     margin: 2px 0;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 /* Form controls and buttons */
@@ -73,27 +124,35 @@ input[type="date"],
 button {
     padding: 10px;
     border-radius: 6px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     margin-right: 10px;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
 }
 
-select,
-input[type="date"] {
-    background-color: white;
-    color: #333;
-    min-width: 150px;
+select:hover,
+input[type="date"]:hover {
+    border-color: var(--button-bg);
+}
+
+select:focus,
+input[type="date"]:focus {
+    outline: none;
+    border-color: var(--button-bg);
+    box-shadow: 0 0 0 2px rgba(206, 184, 136, 0.2);
 }
 
 button {
-    background-color: #4caf50;
-    color: white;
+    background-color: var(--button-bg);
+    color: var(--background-primary);
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #388e3c;
+    background-color: var(--button-hover);
 }
 
 /* Dietary restrictions list */
@@ -105,10 +164,11 @@ button:hover {
 
 .dietary-restrictions li {
     padding: 10px;
-    background-color: #f1f1f1;
+    background-color: var(--dietary-tag-bg);
     margin-bottom: 5px;
     border-radius: 4px;
-    color: #333;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
 }
 
 /* Grid layout for responsive design */
