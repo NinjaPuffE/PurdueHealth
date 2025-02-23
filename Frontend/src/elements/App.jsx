@@ -12,6 +12,9 @@ import DiningCourtMenu from './DiningCourtMenu';
 import Dietary from './Dietary';
 import Home from './Home';
 import Motivation from './Motivation';
+import Social from './Social';
+import Favorites from './Favorites';
+import WhereToEat from './WhereToEat';
 
 const App = () => {
   const { isAuthenticated, user, getAccessTokenSilently, logout } = useAuth0();
@@ -314,6 +317,9 @@ const App = () => {
                       <li onClick={() => { setActiveView('settings'); closeMenu(); }}>Settings</li>
                       <li onClick={() => { setActiveView('dietary'); closeMenu(); }}>Dietary</li>
                       <li onClick={() => { setActiveView('motivation'); closeMenu(); }}>Motivation</li>
+                      <li onClick={() => { setActiveView('social'); closeMenu(); }}>Social</li>
+                      <li onClick={() => { setActiveView('favorites'); closeMenu(); }}>Favorites</li>
+                      <li onClick={() => { setActiveView('whereToEat'); closeMenu(); }}>Where to Eat</li>
                       <li onClick={handleLogout}>Log Out</li>
                     </ul>
                   </nav>
@@ -342,6 +348,21 @@ const App = () => {
                     />
                   ) : activeView === 'motivation' ? (
                     <Motivation 
+                      userId={user.email}
+                      token={token}
+                    />
+                  ) : activeView === 'social' ? (
+                    <Social 
+                      userId={user.email}
+                      token={token}
+                    />
+                  ) : activeView === 'favorites' ? (
+                    <Favorites 
+                      userId={user.email}
+                      token={token}
+                    />
+                  ) : activeView === 'whereToEat' ? (
+                    <WhereToEat 
                       userId={user.email}
                       token={token}
                     />

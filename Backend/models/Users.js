@@ -41,7 +41,33 @@ const userSchema = new mongoose.Schema({
   hasTakenSurvey: {
     type: Boolean,
     default: false
-  }
+  },
+  friends: [{
+    type: String,
+    ref: 'User'
+  }],
+  friendRequests: {
+    sent: [{
+      type: String,
+      ref: 'User'
+    }],
+    received: [{
+      type: String,
+      ref: 'User'
+    }]
+  },
+  mealGroups: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MealGroup'
+  }],
+  favorites: [{
+    name: String,
+    calories: Number,
+    protein: Number,
+    carbs: Number,
+    fat: Number,
+    servingSize: String,
+  }]
 });
 
 module.exports = mongoose.model('User', userSchema);

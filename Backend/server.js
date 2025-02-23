@@ -38,18 +38,22 @@ const surveyRoutes = require('./routes/survey');
 const workoutPlanRoutes = require('./routes/workoutPlan');
 const authenticationRoutes = require('./routes/authentication');
 const dietaryRoutes = require('./routes/dietary');
+const menuRoutes = require('./routes/menu'); 
+const motivationRoutes = require('./routes/motivation');
+const socialRoutes = require('./routes/social');
+const favoritesRoutes = require('./routes/favorites');
+const recommendationsRoutes = require('./routes/recommendations');
 
 // Register routes
 app.use('/api/survey', surveyRoutes); // Make sure this is registered
 app.use('/api/workout-plan', workoutPlanRoutes);
 app.use('/api/auth', authenticationRoutes);
 app.use('/api/dietary', dietaryRoutes);
-
-const menuRoutes = require('./routes/menu'); 
 app.use('/api/menu', menuRoutes);
-
-const motivationRoutes = require('./routes/motivation');
 app.use('/api/motivation', motivationRoutes);
+app.use('/api/social', socialRoutes);
+app.use('/api/favorites', favoritesRoutes);
+app.use('/api/recommendations', recommendationsRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
