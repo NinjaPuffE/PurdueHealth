@@ -477,6 +477,42 @@ router.delete('/remove-food/:userId/:foodId', checkJwt, requireEmail, async (req
   }
 });
 
+// Add this route to get dining courts for a food item
+router.get('/food-locations/:itemName', checkJwt, requireEmail, async (req, res) => {
+  try {
+    const { itemName } = req.params;
+    
+    // Get today's date range
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // Find all instances of this food item
+    const menuItems = await Menu.find({
+      item_name: { $regex: new RegExp(itemName, 'i') }, // Case-insensitive search
+      date: {
+        $gte: today,
+        $lt: tomorrow
+      }
+    }).distinct('dining_court');
+
+    console.log(`Found ${menuItems.length} locations for ${itemName}`);
+
+    if (!menuItems || menuItems.length === 0) {
+      return res.json(['Not currently served']);
+    }
+
+    res.json(menuItems);
+  } catch (error) {
+    console.error('Food locations error:', error);
+    res.status(500).json({ 
+      error: 'Failed to find food locations',
+      details: error.message 
+    });
+  }
+});
+
 // Helper function to parse nutrition values
 const parseNutritionValue = (value) => {
   if (!value) return 0;

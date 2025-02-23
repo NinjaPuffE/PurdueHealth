@@ -189,45 +189,75 @@ h2 {
   width: 25px; 
 }
 
+/* Update the side menu styles */
 .side-menu {
   position: fixed;
-  top: 0;
   left: 0;
-  width: 25vw;
-  max-width: 250px;
+  top: 0;
   height: 100vh;
+  width: 250px;
   background-color: var(--background-secondary);
   box-shadow: 2px 0 8px rgba(0,0,0,0.2);
   padding-top: 60px;
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
-  border-color: var(--border-color);
 }
+
 .side-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-.side-menu ul li {
-  padding: 1rem;
-  border-bottom: 1px solid var(--light-grey);
-  cursor: pointer;
-  transition: background-color var(--transition);
-}
-.side-menu ul li:hover {
-  background-color: var(--light-grey);
-}
 
 .side-menu li {
-  transition: background-color 0.3s;
+  padding: 1rem 1.5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
+/* Hover effect */
 .side-menu li:hover {
-  background-color: var(--hover-color);
+  background-color: var(--background-hover);
+  padding-left: 2rem;
+  color: var(--primary-color);
 }
 
+/* Active state */
+.side-menu li.active {
+  background-color: var(--background-active);
+  color: var(--primary-color);
+  border-left: 4px solid var(--primary-color);
+  font-weight: 500;
+}
+
+/* Add hover indicator */
+.side-menu li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: var(--primary-color);
+  transform: scaleY(0);
+  transition: transform 0.2s ease;
+}
+
+.side-menu li:hover::before {
+  transform: scaleY(1);
+}
+
+/* Dark mode specific styles */
 [data-theme='dark'] .side-menu li:hover {
-  background-color: var(--dark-hover-color);
+  background-color: rgba(206, 184, 136, 0.1);
+}
+
+[data-theme='dark'] .side-menu li.active {
+  background-color: rgba(206, 184, 136, 0.15);
 }
 
 .main-content {

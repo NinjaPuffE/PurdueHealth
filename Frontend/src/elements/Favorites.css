@@ -161,3 +161,61 @@
   margin: 1rem 0;
   text-align: center;
 }
+
+.dining-courts {
+  margin: 0.5rem 0;
+}
+
+.dining-court-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.dining-court-tag {
+  background: var(--background-secondary);
+  color: var(--text-primary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.dining-court-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dining-court-tag[data-status="not-served"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.dining-court-tag.not-served {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+/* Add tooltip styles */
+.dining-court-tag[title] {
+  position: relative;
+}
+
+.dining-court-tag[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background: var(--background-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-bottom: 0.5rem;
+}

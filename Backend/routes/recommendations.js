@@ -8,40 +8,59 @@ const { MongoClient } = require('mongodb');
 
 // Debug route for menu data
 router.get('/debug-menu', checkJwt, requireEmail, async (req, res) => {
-    try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        const sample = await Menu.findOne({ 
-            date: {
-                $gte: today,
-                $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
-            }
-        });
-        
-        res.json({
-            sample,
-            hasData: !!sample,
-            date: today,
-            query: {
-                date: {
-                    $gte: today,
-                    $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Debug menu error:', error);
-        res.status(500).json({ error: error.message });
-    }
+  try {
+    const { mealPeriod, date } = getNextMealPeriod();
+    const queryDate = new Date(date);
+    queryDate.setHours(0, 0, 0, 0);
+
+    const menuItems = await Menu.find({
+      date: {
+        $gte: queryDate,
+        $lt: new Date(queryDate.getTime() + 24 * 60 * 60 * 1000)
+      },
+      meal_period: mealPeriod
+    }).lean();
+
+    res.json({
+      currentTime: new Date(),
+      mealPeriod,
+      queryDate,
+      totalItems: menuItems.length,
+      itemsByDiningCourt: menuItems.reduce((acc, item) => {
+        if (!acc[item.dining_court]) acc[item.dining_court] = 0;
+        acc[item.dining_court]++;
+        return acc;
+      }, {}),
+      sampleItems: menuItems.slice(0, 5)
+    });
+  } catch (error) {
+    console.error('Debug menu error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
+router.get('/debug-data', checkJwt, requireEmail, async (req, res) => {
+  try {
+    const stats = {
+      totalMenuItems: await Menu.countDocuments({}),
+      distinctDates: await Menu.distinct('date'),
+      distinctTimeslots: await Menu.distinct('timeslot'),
+      sampleItems: await Menu.find({}).limit(5).lean()
+    };
+
+    res.json(stats);
+  } catch (error) {
+    console.error('Debug data error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update the /dining route
 router.post('/dining', checkJwt, requireEmail, async (req, res) => {
   try {
-    const { userId, groupId } = req.body;
-    
-    // Get next meal period info
-    const { mealPeriod, date } = getNextMealPeriod();
+    const { userId, groupId, mealPeriod, date } = req.body;
+
+    console.log('Raw request data:', { userId, groupId, mealPeriod, date });
 
     // Get user(s) favorites
     let userFavorites = [];
@@ -57,34 +76,40 @@ router.post('/dining', checkJwt, requireEmail, async (req, res) => {
       ], []);
     } else {
       const user = await User.findOne({ email: userId });
-      userFavorites = user.favorites || [];
+      // Filter out any undefined or invalid favorites
+      userFavorites = (user.favorites || []).filter(fav => fav && fav.name);
     }
 
-    // Get menu items from MongoDB
+    // Debug log favorites
+    console.log('User favorites:', userFavorites.map(f => f?.name).filter(Boolean));
+
     const client = await MongoClient.connect(process.env.MONGO_URI);
     const db = client.db(process.env.DATABASE_NAME);
     const menuCollection = db.collection(process.env.MENUS_COLLECTION_NAME);
 
-    // Find menu items for the current/next meal period
     const menuItems = await menuCollection.find({
-      date: new Date(date),
-      meal_period: mealPeriod
+      dining_court: { $exists: true },
+      date: date,
+      timeslot: mealPeriod
     }).toArray();
 
-    console.log(`Found ${menuItems.length} menu items for ${mealPeriod} on ${date}`);
+    console.log('Menu query:', {
+      date,
+      timeslot: mealPeriod,
+      itemsFound: menuItems.length,
+      sampleItems: menuItems.slice(0, 2).map(item => ({
+        name: item.item_name,
+        court: item.dining_court
+      }))
+    });
 
-    if (!menuItems.length) {
-      const diningCourts = ['Hillenbrand', 'Earhart', 'Ford', 'Wiley', 'Windsor'];
-      const randomCourt = diningCourts[Math.floor(Math.random() * diningCourts.length)];
+    if (!menuItems || menuItems.length === 0) {
       return res.json({
-        diningCourt: randomCourt,
-        confidence: 0,
-        matchingItems: [],
-        message: 'No menu data available, random selection made'
+        message: 'No menu data available for the selected period',
+        error: true
       });
     }
 
-    // Group items by dining court
     const courtMenus = menuItems.reduce((acc, item) => {
       if (!acc[item.dining_court]) {
         acc[item.dining_court] = [];
@@ -93,10 +118,10 @@ router.post('/dining', checkJwt, requireEmail, async (req, res) => {
       return acc;
     }, {});
 
-    // Calculate scores for each dining court
     const scores = Object.entries(courtMenus).map(([court, items]) => {
       const matchingItems = items.filter(item => {
         return userFavorites.some(fav => {
+          if (!fav || !fav.name || !item.item_name) return false;
           const itemName = item.item_name.toLowerCase();
           const favName = fav.name.toLowerCase();
           return itemName.includes(favName) || favName.includes(itemName);
@@ -113,35 +138,28 @@ router.post('/dining', checkJwt, requireEmail, async (req, res) => {
         matchingItems: matchingItems.map(item => ({
           name: item.item_name,
           matchedPreference: userFavorites.find(fav => 
+            fav && fav.name && item.item_name &&
             item.item_name.toLowerCase().includes(fav.name.toLowerCase())
           )?.name
-        })),
-        isOpen: items.length > 0
+        })).filter(item => item.matchedPreference), // Filter out items without matches
+        isOpen: true
       };
     });
 
-    // Get the best recommendation from open dining courts
-    const openCourts = scores.filter(score => score.isOpen);
-    if (!openCourts.length) {
-      const diningCourts = ['Hillenbrand', 'Earhart', 'Ford', 'Wiley', 'Windsor'];
-      const randomCourt = diningCourts[Math.floor(Math.random() * diningCourts.length)];
-      return res.json({
-        diningCourt: randomCourt,
-        confidence: 0,
-        matchingItems: [],
-        message: 'No dining courts open, random selection made'
-      });
-    }
+    // Sort by confidence score in descending order
+    const sortedScores = scores.sort((a, b) => b.confidence - a.confidence);
+    const bestOption = sortedScores[0];
 
-    const bestOption = openCourts.reduce((best, current) => 
-      current.confidence > best.confidence ? current : best
-    , openCourts[0]);
-
+    console.log('Final recommendation:', bestOption);
     res.json(bestOption);
 
   } catch (error) {
     console.error('Recommendation error:', error);
-    res.status(500).json({ error: 'Failed to generate recommendation' });
+    res.status(500).json({ 
+      error: 'Failed to generate recommendation', 
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

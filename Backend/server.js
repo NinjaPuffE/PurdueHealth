@@ -28,6 +28,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add this before your routes
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
@@ -54,6 +60,20 @@ app.use('/api/motivation', motivationRoutes);
 app.use('/api/social', socialRoutes);
 app.use('/api/favorites', favoritesRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
+
+// Add this after your routes but before error handler
+app.use((err, req, res, next) => {
+  console.error('API Error:', {
+    path: req.path,
+    method: req.method,
+    error: err.message,
+    stack: err.stack
+  });
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: err.message
+  });
+});
 
 // Global error handler
 app.use((err, req, res, next) => {

@@ -67,6 +67,7 @@ const userSchema = new mongoose.Schema({
     carbs: Number,
     fat: Number,
     servingSize: String,
+    diningCourts: [String] // Change from diningCourt to diningCourts array
   }]
 });
 

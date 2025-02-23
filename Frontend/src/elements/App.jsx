@@ -310,16 +310,29 @@ const App = () => {
                 {menuOpen && (
                   <nav className="side-menu">
                     <ul>
-                      <li onClick={() => { setActiveView('home'); closeMenu(); }}>Home</li>
-                      <li onClick={() => { setActiveView('profile'); closeMenu(); }}>Profile</li>
-                      <li onClick={() => { setActiveView('workoutPlan'); closeMenu(); }}>Workout Plan</li>
-                      <li onClick={() => { setActiveView('diningCourtMenu'); closeMenu(); }}>Dining Court Menu</li>
-                      <li onClick={() => { setActiveView('settings'); closeMenu(); }}>Settings</li>
-                      <li onClick={() => { setActiveView('dietary'); closeMenu(); }}>Dietary</li>
-                      <li onClick={() => { setActiveView('motivation'); closeMenu(); }}>Motivation</li>
-                      <li onClick={() => { setActiveView('social'); closeMenu(); }}>Social</li>
-                      <li onClick={() => { setActiveView('favorites'); closeMenu(); }}>Favorites</li>
-                      <li onClick={() => { setActiveView('whereToEat'); closeMenu(); }}>Where to Eat</li>
+                      {[
+                        { id: 'home', label: 'Home' },
+                        { id: 'profile', label: 'Profile' },
+                        { id: 'workoutPlan', label: 'Workout Plan' },
+                        { id: 'diningCourtMenu', label: 'Dining Court Menu' },
+                        { id: 'settings', label: 'Settings' },
+                        { id: 'dietary', label: 'Dietary' },
+                        { id: 'motivation', label: 'Motivation' },
+                        { id: 'social', label: 'Social' },
+                        { id: 'favorites', label: 'Favorites' },
+                        { id: 'whereToEat', label: 'Where to Eat' }
+                      ].map(item => (
+                        <li
+                          key={item.id}
+                          className={activeView === item.id ? 'active' : ''}
+                          onClick={() => {
+                            setActiveView(item.id);
+                            closeMenu();
+                          }}
+                        >
+                          {item.label}
+                        </li>
+                      ))}
                       <li onClick={handleLogout}>Log Out</li>
                     </ul>
                   </nav>
