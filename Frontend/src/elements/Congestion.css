@@ -1,0 +1,110 @@
+:root {
+  --low-color: #4CAF50;
+  --moderate-color: #FFC107;
+  --high-color: #F44336;
+}
+
+.congestion-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.congestion-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.facility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.facility-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.facility-card:hover {
+  transform: translateY(-5px);
+}
+
+.facility-card h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+}
+
+.usage-meter {
+  height: 8px;
+  background: var(--background-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.usage-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336);
+  transition: width 0.3s ease;
+}
+
+.usage-stats {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.congestion-level {
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.congestion-level.low {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+}
+
+.congestion-level.moderate {
+  background: rgba(255, 193, 7, 0.1);
+  color: #FFC107;
+}
+
+.congestion-level.high {
+  background: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+}
+
+.last-updated {
+  text-align: right;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-top: 2rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-theme='dark'] .facility-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

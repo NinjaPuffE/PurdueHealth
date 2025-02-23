@@ -49,6 +49,7 @@ const motivationRoutes = require('./routes/motivation');
 const socialRoutes = require('./routes/social');
 const favoritesRoutes = require('./routes/favorites');
 const recommendationsRoutes = require('./routes/recommendations');
+const congestionRouter = require('./routes/congestion');
 
 // Register routes
 app.use('/api/survey', surveyRoutes); // Make sure this is registered
@@ -60,6 +61,7 @@ app.use('/api/motivation', motivationRoutes);
 app.use('/api/social', socialRoutes);
 app.use('/api/favorites', favoritesRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
+app.use('/api/congestion', congestionRouter);
 
 // Add this after your routes but before error handler
 app.use((err, req, res, next) => {

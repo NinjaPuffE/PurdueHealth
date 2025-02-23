@@ -15,6 +15,7 @@ import Motivation from './Motivation';
 import Social from './Social';
 import Favorites from './Favorites';
 import WhereToEat from './WhereToEat';
+import Congestion from './Congestion';
 
 const App = () => {
   const { isAuthenticated, user, getAccessTokenSilently, logout } = useAuth0();
@@ -320,7 +321,8 @@ const App = () => {
                         { id: 'motivation', label: 'Motivation' },
                         { id: 'social', label: 'Social' },
                         { id: 'favorites', label: 'Favorites' },
-                        { id: 'whereToEat', label: 'Where to Eat' }
+                        { id: 'whereToEat', label: 'Where to Eat' },
+                        { id: 'congestion', label: 'Facility Usage' }
                       ].map(item => (
                         <li
                           key={item.id}
@@ -379,6 +381,8 @@ const App = () => {
                       userId={user.email}
                       token={token}
                     />
+                  ) : activeView === 'congestion' ? (
+                    <Congestion />
                   ) : null}
                 </main>
               </div>
