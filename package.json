@@ -1,6 +1,7 @@
 {
   "name": "purdue-app",
   "version": "0.1.0",
+  "main": "src/index.js",
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^2.3.0",
@@ -31,11 +32,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "backend": "cd Backend && node server.js",
-    "frontend": "npm start --prefix ./Frontend"
-  },
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
   "eslintConfig": {
     "extends": [
       "react-app",
