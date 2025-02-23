@@ -28,7 +28,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .facility-card:hover {
@@ -107,4 +107,24 @@
 
 [data-theme='dark'] .facility-card {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.closed-status {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--background-secondary);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin: 1rem 0;
+}
+
+.loading, .error-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-primary);
+}
+
+.error-message {
+  color: var(--high-color);
 }

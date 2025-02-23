@@ -58,22 +58,28 @@ const Congestion = () => {
         {congestionData?.areas?.map((area) => (
           <div key={area.name} className="facility-card">
             <h3>{area.name}</h3>
-            <div className="usage-meter">
-              <div 
-                className="usage-fill"
-                style={{ 
-                  width: `${area.occupancyPercentage}%`,
-                  backgroundColor: `var(--${area.congestionLevel.toLowerCase()}-color)`
-                }}
-              />
-            </div>
-            <div className="usage-stats">
-              <span>{area.currentOccupancy} / {area.maxCapacity}</span>
-              <span>{area.occupancyPercentage}% Full</span>
-            </div>
-            <div className={`congestion-level ${area.congestionLevel.toLowerCase()}`}>
-              {area.congestionLevel}
-            </div>
+            {area.isClosed ? (
+              <div className="closed-status">Closed</div>
+            ) : (
+              <>
+                <div className="usage-meter">
+                  <div 
+                    className="usage-fill"
+                    style={{ 
+                      width: `${area.occupancyPercentage}%`,
+                      backgroundColor: `var(--${area.congestionLevel.toLowerCase()}-color)`
+                    }}
+                  />
+                </div>
+                <div className="usage-stats">
+                  <span>{area.currentOccupancy} / {area.maxCapacity}</span>
+                  <span>{area.occupancyPercentage}% Full</span>
+                </div>
+                <div className={`congestion-level ${area.congestionLevel.toLowerCase()}`}>
+                  {area.congestionLevel}
+                </div>
+              </>
+            )}
             <div className="last-updated">
               Last Updated: {area.lastUpdated}
             </div>
