@@ -30,7 +30,8 @@ nutrition_collection = db[NUT_COLLECTION_NAME]
 menu_collection.create_index([
     ('dining_court', pymongo.ASCENDING),
     ('item_name', pymongo.ASCENDING),
-    ('date', pymongo.ASCENDING)
+    ('date', pymongo.ASCENDING),
+    ('timeslot', pymongo.ASCENDING)
 ], unique=True)
 
 nutrition_collection.create_index([
@@ -173,12 +174,11 @@ def check_future_menus():
                             'dining_court': item['dining_court'],
                             'item_name': item['item_name'],
                             'date': item['date'],
-                            'timeslot': item['timeslot']
+                            'timeslot': item['timeslot']  # Ensure uniqueness across different timeslots
                         })
-
                         if not existing_item:
                             menu_collection.insert_one(item)
-                            print(f"Added new menu item: {item['item_name']} at {item['dining_court']} at {item['timeslot']} on {item['date']}")
+                            print(f"✅ Added: {item['item_name']} at {item['dining_court']} ({item['timeslot']}) on {item['date']}")
 
                             # Check and update nutrition info
                             nutrition_data = extract_nutrition_data(driver, item['nutrition_link'], item['item_name'])
@@ -190,7 +190,8 @@ def check_future_menus():
                                 )
                                 print(f"Updated nutrition info for: {item['item_name']}")
                         else:
-                            print(f"Skipping existing item: {item['item_name']} at {item['dining_court']} on {item['date']}")
+                            print(f"❌ Skipped (Already Exists): {item['item_name']} at {item['dining_court']} ({item['timeslot']}) on {item['date']}")
+                            print(f"Existing item: {existing_item}")  # Print existing item details for debugging
 
                     print(f"Data collection completed for {court} - {time_slot} on {date}")
 
